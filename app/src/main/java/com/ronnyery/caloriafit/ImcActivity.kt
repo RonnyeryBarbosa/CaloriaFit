@@ -1,5 +1,6 @@
 package com.ronnyery.caloriafit
 
+import android.content.Context
 import android.content.DialogInterface
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
@@ -7,6 +8,7 @@ import android.support.annotation.StringRes
 import android.support.v7.app.AlertDialog
 import android.util.Log
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_imc.*
 
@@ -46,6 +48,11 @@ class ImcActivity : AppCompatActivity() {
             .create()
 
         alertDialog.show()
+
+        val im: InputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        im.hideSoftInputFromWindow(imcWeight.windowToken,0)
+        im.hideSoftInputFromWindow(imcHeight.windowToken,0)
+
 
     }
 
