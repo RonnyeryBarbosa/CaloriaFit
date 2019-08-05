@@ -106,7 +106,7 @@ class MainActivity : AppCompatActivity() {
         {
             itemView.setBackgroundColor(ContextCompat.getColor(itemView.context, mainItem.colorValue))
             imgViewMain.setImageResource(mainItem.imgId)
-            imgViewText.text = mainItem.textId.toString()
+            imgViewText.text = itemView.context.getString(mainItem.textId)
 
             itemView.setOnClickListener {
                 listener.onClick(adapterPosition)

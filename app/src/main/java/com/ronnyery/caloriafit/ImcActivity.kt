@@ -2,11 +2,15 @@ package com.ronnyery.caloriafit
 
 import android.content.Context
 import android.content.DialogInterface
+import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.annotation.StringRes
 import android.support.v7.app.AlertDialog
 import android.util.Log
+import android.view.ContextMenu
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
@@ -41,10 +45,23 @@ class ImcActivity : AppCompatActivity() {
         val alertDialog = AlertDialog.Builder(this)
             .setTitle(getString(R.string.imc_response, imc))
             .setMessage(resId)
-            .setPositiveButton(android.R.string.ok, DialogInterface.OnClickListener { dialog, which ->
+            .setNegativeButton(android.R.string.ok, DialogInterface.OnClickListener { dialog, which ->
 
                 dialog.dismiss()
             })
+            .setPositiveButton(R.string.save) { dialog, which ->
+
+                val helper = SqlHelper.getInstance(this)
+                val calcId = helper.addItem(SqlHelper.TYPE_IMC, imc)
+
+                if (calcId > 0)
+                {
+                    Toast.makeText(this, R.string.calc_saved, Toast.LENGTH_LONG).show()
+
+                    openListCalcActivity()
+                }
+
+            }
             .create()
 
         alertDialog.show()
@@ -54,6 +71,13 @@ class ImcActivity : AppCompatActivity() {
         im.hideSoftInputFromWindow(imcHeight.windowToken,0)
 
 
+    }
+
+    private fun openListCalcActivity() {
+        val intent = Intent(this, ListCalcActivity::class.java)
+        intent.putExtra("type", SqlHelper.TYPE_IMC)
+
+        startActivity(intent)
     }
 
     @StringRes
@@ -91,6 +115,24 @@ class ImcActivity : AppCompatActivity() {
                 &&  !imcWeight.text.toString().startsWith("0")
                 &&  imcHeight.text.toString().isNotEmpty()
                 &&  imcWeight.text.toString().isNotEmpty()
+    }
+
+
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+
+        menuInflater.inflate(R.menu.menu,menu)
+        return true
+
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean
+    {
+        when(item!!.itemId)
+        {
+            R.id.menu_list -> openListCalcActivity()
+        }
+        return super.onOptionsItemSelected(item)
     }
 
 }
